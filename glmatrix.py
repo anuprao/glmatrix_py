@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# Ported to Python by Anup Jayapal Rao, https://github.com/anuprao
+#
+# Code derived from following projects:
+# 	gl-matrix.js : https://github.com/toji/gl-matrix by Brandon Jones, https://github.com/toji
+#	gl-matrix.c : https://github.com/coreh/gl-matrix.c.git by Marco Aurélio, https://github.com/coreh
+#
+
 import math
 
 ################################################################################
