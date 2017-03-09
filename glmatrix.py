@@ -1079,7 +1079,7 @@ def mat4_frustum(left, right, bottom, top, near, far, dest):
 
 def mat4_perspective(fovy, aspect, near, far, dest):
 
-	top = near * tan(fovy * 3.14159265358979323846 / 360.0)
+	top = near * math.tan(fovy * 3.14159265358979323846 / 360.0)
 	right = top * aspect
 	
 	return mat4_frustum(-right, right, -top, top, near, far, dest)
