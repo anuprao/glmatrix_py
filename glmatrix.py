@@ -1344,7 +1344,7 @@ def quat_length(quat):
 #
 def quat_normalize(quat, dest):
 
-	if (None==dest):
+	if (None == dest):
 		dest = quat
 	
 	x = quat[0]
@@ -1360,6 +1360,7 @@ def quat_normalize(quat, dest):
 		dest[1] = 0
 		dest[2] = 0
 		dest[3] = 0
+		
 		return dest
 	
 	len = 1 / len
@@ -1583,7 +1584,43 @@ def gl_mat4_from_quat(q, dest):
 	quat_toMat4_do_not_use_directly(q, dest)
 	mat4_transpose(dest, None)
 	return dest
+
+################################################################################
+
+# Additional helpers
+
+# Ref: https://github.com/Kazade/kazmath
+
+# Rotates a quaternion around an axis
+def quat_rot_from_axisangle(axis, theta, dest):
+	thetaBy2 = theta * 0.5
+
+	dest[0] = axis[0] * math.sin(thetaBy2)
+	dest[1] = axis[1] * math.sin(thetaBy2)
+	dest[2] = axis[2] * math.sin(thetaBy2)
+	dest[3] = math.cos(thetaBy2)
+
+	quat_normalize(dest, None)
+
+	return dest
+
+# Build a rotation matrix from an axis and an angle.
+def mat4_rot_from_axisangle(axis, theta):
+	q = quat_create(None)
+	quat_rot_from_axisangle(axis, theta, q)
 	
+	dest = mat4_create(None)
+	gl_mat4_from_quat(q, dest)
+
+	return dest
+	
+def mat4_extract_translation(matm, dest):
+	dest[0] = matm[12]
+	dest[1] = matm[13]
+	dest[2] = matm[14]
+
+	return dest
+
 ################################################################################
 
 # Trackball helpers
@@ -1737,3 +1774,69 @@ def trackball(q, p1x, p1y, p2x, p2y):
 	phi = 2.0 * asin(t)
 
 	axis_to_quat(a, phi, q)
+
+################################################################################
+
+# Matrix Stack helpers
+
+class matstack:
+	def __init__(self):
+		self.entries = []
+		
+		self.loadMatrix(None)
+
+	def isEmpty(self):
+		return self.entries == []
+
+	def push(self, item):
+		self.entries.append(item)
+
+	def pop(self):
+		
+		# Pop but leave atleast one remaining entry
+		if 1 < self.size() :
+			return self.entries.pop()
+			
+		else:
+			print("Expected stack pop will make it empty. There must be atleast one matrix in stack at any time")
+
+	def peek(self):
+		if 0 < self.size() :
+			return self.entries[len(self.entries)-1]
+		else:
+			return None
+
+	def size(self):
+		return len(self.entries)
+		
+	##############################################################################
+		
+	def loadMatrix(self, m):
+		m_Tmp = mat4_create(m)
+		self.push(m_Tmp)
+		
+	def loadIdentityMatrix(self):
+		m_Id = mat4_identity(None)
+		self.loadMatrix(m_Id)		
+		
+	def multMatrix(self, m):
+		if 0 < self.size() :
+			m_Top = self.peek()
+			m_Tmp = mat4_create(None)
+			gl_mat4_multiply(m, m_Top, m_Tmp)
+			mat4_set(m_Tmp, m_Top)
+		
+	def getMatrix(self, dest):
+		if 0 < self.size() :
+			m_Top = self.peek()
+			mat4_set(m_Top, dest)
+			
+	def pushMatrix(self):
+		if 0 < self.size() :
+			m_Top = self.peek()
+			self.loadMatrix(m_Top)
+		
+	def popMatrix(self):
+		if 0 < self.size() :
+			self.pop()
+			
