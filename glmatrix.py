@@ -1782,8 +1782,6 @@ def trackball(q, p1x, p1y, p2x, p2y):
 class matstack:
 	def __init__(self):
 		self.entries = []
-		
-		self.loadMatrix(None)
 
 	def isEmpty(self):
 		return self.entries == []
@@ -1793,12 +1791,11 @@ class matstack:
 
 	def pop(self):
 		
-		# Pop but leave atleast one remaining entry
-		if 1 < self.size() :
+		if 0 < self.size() :
 			return self.entries.pop()
 			
 		else:
-			print("Expected stack pop will make it empty. There must be atleast one matrix in stack at any time")
+			print("Expected stack pop is already empty.")
 
 	def peek(self):
 		if 0 < self.size() :
