@@ -8,7 +8,7 @@
 #	gl-matrix.c : https://github.com/coreh/gl-matrix.c.git by Marco Aurélio, https://github.com/coreh
 #
 
-import math
+from math import *
 
 ################################################################################
 
@@ -1079,7 +1079,7 @@ def mat4_frustum(left, right, bottom, top, near, far, dest):
 
 def mat4_perspective(fovy, aspect, near, far, dest):
 
-	top = near * math.tan(fovy * 3.14159265358979323846 / 360.0)
+	top = near * tan(fovy * 3.14159265358979323846 / 360.0)
 	right = top * aspect
 	
 	return mat4_frustum(-right, right, -top, top, near, far, dest)
@@ -1552,8 +1552,8 @@ def gl_quat_from_x_rotation(theta):
 	thetaBy2 = theta * 0.5
 	
 	dest = quat_create(None)
-	dest[0] = math.sin(thetaBy2)
-	dest[3] = math.cos(thetaBy2)
+	dest[0] = sin(thetaBy2)
+	dest[3] = cos(thetaBy2)
 	
 	return dest
 	
@@ -1561,8 +1561,8 @@ def gl_quat_from_y_rotation(theta):
 	thetaBy2 = theta * 0.5
 	
 	dest = quat_create(None)
-	dest[1] = math.sin(thetaBy2)
-	dest[3] = math.cos(thetaBy2)
+	dest[1] = sin(thetaBy2)
+	dest[3] = cos(thetaBy2)
 	
 	return dest
 	
@@ -1570,8 +1570,8 @@ def gl_quat_from_z_rotation(theta):
 	thetaBy2 = theta * 0.5
 	
 	dest = quat_create(None)
-	dest[2] = math.sin(thetaBy2)
-	dest[3] = math.cos(thetaBy2)
+	dest[2] = sin(thetaBy2)
+	dest[3] = cos(thetaBy2)
 	
 	return dest
 
@@ -1601,10 +1601,10 @@ def gl_mat4_from_scale(scale_v):
 def quat_rot_from_axisangle(axis, theta, dest):
 	thetaBy2 = theta * 0.5
 
-	dest[0] = axis[0] * math.sin(thetaBy2)
-	dest[1] = axis[1] * math.sin(thetaBy2)
-	dest[2] = axis[2] * math.sin(thetaBy2)
-	dest[3] = math.cos(thetaBy2)
+	dest[0] = axis[0] * sin(thetaBy2)
+	dest[1] = axis[1] * sin(thetaBy2)
+	dest[2] = axis[2] * sin(thetaBy2)
+	dest[3] = cos(thetaBy2)
 
 	quat_normalize(dest, None)
 
