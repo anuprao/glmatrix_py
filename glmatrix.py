@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# glmatrixpy
+# source code repo at https://github.com/anuprao/glmatrixpy
+#
 # Ported to Python by Anup Jayapal Rao, https://github.com/anuprao
 #
 # Code derived from following projects:
