@@ -7,6 +7,28 @@
 # 	gl-matrix.js : https://github.com/toji/gl-matrix by Brandon Jones, https://github.com/toji
 #	gl-matrix.c : https://github.com/coreh/gl-matrix.c.git by Marco Aurélio, https://github.com/coreh
 #
+#
+#					|  m0  m4  m8 m12  |   | a b c d |
+#   				|  m1  m5  m9 m13  | = | e f g h |
+#   				|  m2  m6 m10 m14  |   | i j k l |
+#   				|  m3  m7 m11 m15  |   | 0 0 0 1 |
+#
+#	Translation	T = < d, h, l > = < m12, m13, m14 >
+#
+#   Scale		S = < Sx, Sy, Sz > 
+#		where
+#				Sx =    || < a, e, i > ||    =    || <  m0,  m1,  m2 > ||
+#				Sy =    || < b, f, j > ||    =    || <  m4,  m5,  m6 > ||
+#				Sz =    || < c, g, k > ||    =    || <  m8,  m9, m10 > ||
+#
+#   Rotation		 
+#				| a/Sx  b/Sy  c/Sz     0 |   |   m0/Sx   m4/Sy   m8/Sz       0  |   
+#   			| e/Sx  f/Sy  g/Sz     0 | = |   m1/Sx   m5/Sy   m9/Sz       0  |
+#   			| i/Sx  j/Sy  k/Sz     0 |   |   m2/Sx   m6/Sy  m10/Sz       0  |   
+#   			|    0     0     0     1 |   |       0       0       0       1  |   
+#
+
+################################################################################
 
 from math import *
 
