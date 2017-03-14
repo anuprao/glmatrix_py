@@ -1543,11 +1543,6 @@ def quat_slerp(quat, quat2, slerp, dest):
 
 ################################################################################
 
-def gl_mat4_from_translation(location_v):
-	location_m = mat4_identity(None)
-	mat4_translate(location_m, location_v, None)
-	return location_m
-	
 def gl_mat4_multiply(matb, mata, retMat4):
 	#retMat4 = mat4_create(None)
 	mat4_multiply(mata, matb, retMat4)
@@ -1579,12 +1574,23 @@ def gl_quat_from_z_rotation(theta):
 	dest[3] = math.cos(thetaBy2)
 	
 	return dest
-	
+
+################################################
+
+def gl_mat4_from_translation(location_v):
+	location_m = mat4_identity(None)
+	mat4_translate(location_m, location_v, None)
+	return location_m
+		
 def gl_mat4_from_quat(q, dest):
 	quat_toMat4_do_not_use_directly(q, dest)
-	mat4_transpose(dest, None)
-	return dest
-
+	#mat4_transpose(dest, None)
+	
+def gl_mat4_from_scale(scale_v):
+	scale_m = mat4_identity(None)
+	mat4_scale(scale_m, scale_v, None)
+	return scale_m
+	
 ################################################################################
 
 # Additional helpers
@@ -1811,6 +1817,9 @@ class matstack:
 	def loadMatrix(self, m):
 		m_Tmp = mat4_create(m)
 		self.push(m_Tmp)
+		
+	def unload(self):
+		self.entries.clear()		
 		
 	def loadIdentityMatrix(self):
 		m_Id = mat4_identity(None)
