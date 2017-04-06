@@ -150,3 +150,83 @@ print(transform_array)
 
 print("")
 
+print("#########################################")
+
+print("Quat to Mat44 to Quat")
+
+print("")
+
+deg = -10
+rad = (deg * math.pi / 180)
+q_rot = gl_quat_from_x_rotation(rad)
+rotation_m = mat4_create(None)
+gl_mat4_from_quat(q_rot, rotation_m)
+
+print("Rotation Matrix - X")
+
+print("")
+transform_array = np.array(q_rot, np.float32)
+print(transform_array)
+
+print("")
+
+transform_array = np.array(rotation_m, np.float32)
+print(transform_array)
+
+print("")
+
+resolved_q_rot = quat_from_mat4(rotation_m)
+transform_array = np.array(resolved_q_rot, np.float32)
+print(transform_array)
+
+print("")
+
+deg = -10
+rad = (deg * math.pi / 180)
+q_rot = gl_quat_from_y_rotation(rad)
+rotation_m = mat4_create(None)
+gl_mat4_from_quat(q_rot, rotation_m)
+
+print("Rotation Matrix - Y")
+
+print("")
+transform_array = np.array(q_rot, np.float32)
+print(transform_array)
+
+print("")
+
+transform_array = np.array(rotation_m, np.float32)
+print(transform_array)
+
+print("")
+
+resolved_q_rot = quat_from_mat4(rotation_m)
+transform_array = np.array(resolved_q_rot, np.float32)
+print(transform_array)
+
+print("")
+
+deg = -10
+rad = (deg * math.pi / 180)
+q_rot = gl_quat_from_z_rotation(rad)
+rotation_m = mat4_create(None)
+gl_mat4_from_quat(q_rot, rotation_m)
+
+print("Rotation Matrix - Z")
+
+print("")
+transform_array = np.array(q_rot, np.float32)
+print(transform_array)
+
+print("")
+
+transform_array = np.array(rotation_m, np.float32)
+print(transform_array)
+
+print("")
+
+resolved_q_rot = quat_from_mat4(rotation_m)
+transform_array = np.array(resolved_q_rot, np.float32)
+print(transform_array)
+
+print("")

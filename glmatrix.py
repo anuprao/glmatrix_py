@@ -33,6 +33,7 @@
 
 ################################################################################
 
+import sys
 from math import *
 
 ################################################################################
@@ -1651,6 +1652,117 @@ def mat4_extract_translation(matm, dest):
 	dest[2] = matm[14]
 
 	return dest
+	
+def quat_from_mat4(iMat):
+	
+	# Ref: https://www.j3d.org/matrix_faq/matrfaq_latest.html
+	# Q55.  How do I convert a rotation matrix to a quaternion?
+	# But, before that refer matrix order used in described algorithm
+	# I1.  Important note relating to OpenGL and this document
+	#
+	#	Algorithm                  OpenGL
+	#        | 0  1  2  3  |            | 0  4  8  12 |
+	#        |             |            |             |
+	#        | 4  5  6  7  |            | 1  5  9  13 |
+	#    M = |             |        M = |             |
+	#        | 8  9  10 11 |            | 2  6  10 14 |
+	#        |             |            |             |
+	#        | 12 13 14 15 |            | 3  7  11 15 |
+	#
+	#
+	# Implementation below used OpenGL order
+	
+	q = quat_create(None)
+	
+	x = 0.0
+	y = 0.0
+	z = 0.0
+	w = 0.0
+	
+	diagonal = iMat[0] + iMat[5] + iMat[10] + 1
+	if(diagonal > sys.float_info.epsilon) :
+		# Calculate the scale of the diagonal
+		scale = sqrt(diagonal) * 2.0
+
+		# Calculate the x, y, x and w of the quaternion through the respective equation
+		x = ( iMat[6] - iMat[9] ) / scale
+		y = ( iMat[8] - iMat[2] ) / scale
+		z = ( iMat[1] - iMat[4] ) / scale
+		w = 0.25 * scale
+	
+	else :
+		# If the first element of the diagonal is the greatest value
+		if ( iMat[0] > iMat[5] and iMat[0] > iMat[10] ) :
+			# Find the scale according to the first element, and double that value
+			scale = sqrt( 1.0 + iMat[0] - iMat[5] - iMat[10] ) * 2.0
+
+			# Calculate the x, y, x and w of the quaternion through the respective equation
+			x = 0.25 * scale
+			y = (iMat[1] + iMat[4] ) / scale
+			z = (iMat[8] + iMat[2] ) / scale
+			w = (iMat[6] - iMat[9] ) / scale
+		
+		# Else if the second element of the diagonal is the greatest value
+		elif (iMat[5] > iMat[10]) :
+			# Find the scale according to the second element, and double that value
+			scale = sqrt( 1.0 + iMat[5] - iMat[0] - iMat[10] ) * 2.0
+
+			# Calculate the x, y, x and w of the quaternion through the respective equation
+			x = (iMat[1] + iMat[4] ) / scale
+			y = 0.25 * scale
+			z = (iMat[6] + iMat[9] ) / scale
+			w = (iMat[8] - iMat[2] ) / scale
+		
+		# Else the third element of the diagonal is the greatest value
+		else :
+			# Find the scale according to the third element, and double that value
+			scale  = sqrt( 1.0 + iMat[10] - iMat[0] - iMat[5] ) * 2.0
+
+			# Calculate the x, y, x and w of the quaternion through the respective equation
+			x = (iMat[8] + iMat[2] ) / scale
+			y = (iMat[6] + iMat[9] ) / scale
+			z = 0.25 * scale
+			w = (iMat[1] - iMat[4] ) / scale
+	
+	q[0] = x
+	q[1] = y
+	q[2] = z
+	q[3] = w
+	
+	return q
+	
+def mat4_decompose(iMat):
+	
+	# From mvMatrix, obtain T R S values
+	
+	#
+	translation_v = vec3_create([iMat[12], iMat[13], iMat[14]])
+	
+	#
+	
+	scale_x = vec3_length([iMat[0], iMat[1], iMat[2]])
+	scale_y = vec3_length([iMat[4], iMat[5], iMat[6]])
+	scale_z = vec3_length([iMat[8], iMat[9], iMat[10]])			
+	scale_v = vec3_create([scale_x, scale_y, scale_z])
+	
+	#
+	
+	rotation_m = mat4_identity(None)
+	rotation_m[0] = iMat[0]/scale_x
+	rotation_m[1] = iMat[1]/scale_x
+	rotation_m[2] = iMat[2]/scale_x
+	
+	rotation_m[4] = iMat[4]/scale_y
+	rotation_m[5] = iMat[5]/scale_y
+	rotation_m[6] = iMat[6]/scale_y
+	
+	rotation_m[8] = iMat[8]/scale_z
+	rotation_m[9] = iMat[9]/scale_z
+	rotation_m[10] = iMat[10]/scale_z	
+	
+	rotation_v = quat_from_mat4(rotation_m)
+	
+	return translation_v,rotation_v,scale_v
 
 ################################################################################
 
@@ -1871,3 +1983,12 @@ class matstack:
 		if 0 < self.size() :
 			self.pop()
 			
+	def replaceTop(self, m):
+		if 0 < self.size() :
+			m_Top = self.peek()
+			mat4_set(m , m_Top)
+		
+	def copyTop(self, m):
+		if 0 < self.size() :
+			m_Top = self.peek()
+			mat4_set(m_Top, m)
