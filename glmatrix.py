@@ -1670,7 +1670,7 @@ def quat_from_mat4(iMat):
 	#        | 12 13 14 15 |            | 3  7  11 15 |
 	#
 	#
-	# Implementation below used OpenGL order
+	# Implementation below uses OpenGL order
 	
 	q = quat_create(None)
 	
