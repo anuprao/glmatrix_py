@@ -173,7 +173,7 @@ def vec3_cross(vec, vec2, dest):
 	
 	x = vec[0]
 	y = vec[1]
-	z = vec[2],
+	z = vec[2]
 	x2 = vec2[0]
 	y2 = vec2[1]
 	z2 = vec2[2]
@@ -1138,7 +1138,28 @@ def mat4_ortho(left, right, bottom, top, near, far, dest):
 	
 	return dest
 
-
+def mat4_ortho_GetExtent(dest):
+	
+	left = 0.0
+	right = 0.0
+	bottom = 0.0
+	top = 0.0
+		
+	if None != dest :
+		right = (1.0 - dest[12])/dest[0]
+		
+		left = right - (2.0/dest[0])
+		
+		top =  (1.0 - dest[13])/dest[5]
+		
+		bottom = top - (2.0/dest[5])
+		
+		far = (dest[14] - 1.0)/dest[10]
+		
+		near = far + (2.0/dest[10])
+	
+	return left, right, bottom, top, far, near
+	
 def mat4_lookAt(eye, center, up, dest):
 
 	if (None==dest):
@@ -1789,7 +1810,7 @@ def axis_to_quat(a, phi, q):
 	q[1] = normalised_a[1]
 	q[2] = normalised_a[2]
 	
-	vscale(q,sin(phi/2.0))
+	vec3_scale(q, sin(phi/2.0), None)
 	
 	q[3] = cos(phi/2.0)
 
@@ -1826,10 +1847,10 @@ def add_quats(q1, q2, dest, renormcounter):
     tf = quat_create(None) 
     
     # Note: using vec3 fxn on quat
-    vec3_scale(t1, q2[3])
+    vec3_scale(t1, q2[3], None)
     
     # Note: using vec3 fxn on quat
-    vec3_scale(t2, q1[3])
+    vec3_scale(t2, q1[3], None)
     
     # Note: using vec3 fxn on quat
     vec3_cross(q2, q1, t3)
@@ -1873,11 +1894,11 @@ TRACKBALLSIZE=0.8
 # 
 
 def trackball(q, p1x, p1y, p2x, p2y):
-	# Axis of rotation 
-	a = vec3_create(None)
-
 	p1 = vec3_create(None) 
-	p2 = vec3_create(None) 
+	p2 = vec3_create(None)
+	
+	# Axis of rotation 
+	a = vec3_create(None) 
 	d = vec3_create(None)
 
 	if (p1x == p2x) and (p1y == p2y) :
